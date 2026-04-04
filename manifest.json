@@ -1,0 +1,27 @@
+{
+  "name": "OSIS Finance SMPN 48 Samarinda",
+  "short_name": "OSIS Finance",
+  "description": "Sistem Keuangan & Manajemen OSIS SMPN 48 Samarinda",
+  "start_url": "/SMPNEGERI48/",
+  "scope": "/SMPNEGERI48/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f172a",
+  "theme_color": "#3d5af1",
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/192x192/3d5af1/ffffff?text=OSIS",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://via.placeholder.com/512x512/3d5af1/ffffff?text=OSIS",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "finance"],
+  "lang": "id"
+}
