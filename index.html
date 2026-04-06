@@ -1184,6 +1184,16 @@
          window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById('installBtn').style.display='flex';});
          function installPWA(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(()=>{deferredPrompt=null;document.getElementById('installBtn').style.display='none';});}}
          window.addEventListener('appinstalled',()=>{document.getElementById('installBtn').style.display='none';})
+  <!-- ONESIGNAL FIX CLEAN -->
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(function(OneSignal) {
+    OneSignal.init({
+      appId: "d1e36f88-1e20-4b25-a54f-9d2c033a3af3"
+    });
+  });
    </script>
  </body>
 </html>
