@@ -1124,12 +1124,20 @@
          function openM(id){document.getElementById(id).classList.add('open');}
          function closeM(id){document.getElementById(id).classList.remove('open');}
          document.querySelectorAll('.modal-bg').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
-      
-         
-         <!-- OneSignal SDK -->
+      <!-- OneSignal SDK -->
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 
 <script>
+function openM(id){document.getElementById(id).classList.add('open');}
+function closeM(id){document.getElementById(id).classList.remove('open');}
+
+document.querySelectorAll('.modal-bg').forEach(m =>
+  m.addEventListener('click', e => {
+    if(e.target === m) m.classList.remove('open');
+  })
+);
+
+// 🔥 ONESIGNAL
 window.OneSignalDeferred = window.OneSignalDeferred || [];
 
 OneSignalDeferred.push(function(OneSignal) {
@@ -1138,7 +1146,6 @@ OneSignalDeferred.push(function(OneSignal) {
     notifyButton: { enable: true }
   });
 
-  // 🔥 CEK STATUS SUBSCRIBER
   OneSignal.isPushNotificationsEnabled().then(function(isEnabled) {
     console.log("Subscribed:", isEnabled);
   });
@@ -1148,11 +1155,8 @@ OneSignalDeferred.push(function(OneSignal) {
   });
 });
 
-
-// ══ NOTIFIKASI (gabungan) ══
+// 🔔 NOTIF
 function sendNotif(title, body){
-
-  // 🔔 Toast (notif di dalam web)
   const w = document.getElementById('tw');
   if(w){
     const t = document.createElement('div');
@@ -1161,11 +1165,33 @@ function sendNotif(title, body){
     w.appendChild(t);
     setTimeout(()=>{ t.style.opacity='0'; t.style.transition='.3s'; setTimeout(()=>t.remove(), 300); }, 5000);
   }
-
-  // 🔥 LOG (biar keliatan jalan)
   console.log("Notif:", title, body);
 }
+
+// ══ PWA INSTALL ══
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBtn').style.display = 'flex';
+});
+
+function installPWA(){
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => {
+      deferredPrompt = null;
+      document.getElementById('installBtn').style.display = 'none';
+    });
+  }
+}
+
+window.addEventListener('appinstalled', () => {
+  document.getElementById('installBtn').style.display = 'none';
+});
 </script>
+
 
          // ══ PWA INSTALL ══
          let deferredPrompt;
@@ -1190,7 +1216,6 @@ function sendNotif(title, body){
          // ══ SERVICE WORKER - register AFTER app loads ══
          window.addEventListener('load', () => {
            if('serviceWorker' in navigator){
-             navigator.serviceWorker.register('sw.js')
                .then(reg => console.log('SW registered'))
                .catch(e => console.log('SW error:', e));
            }
