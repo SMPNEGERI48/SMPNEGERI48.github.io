@@ -9,63 +9,10 @@ jobs:
   send-notif:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Check agenda & send notification
         env:
           ONESIGNAL_APP_ID: ${{ secrets.ONESIGNAL_APP_ID }}
           ONESIGNAL_API_KEY: ${{ secrets.ONESIGNAL_API_KEY }}
           FIREBASE_DB_URL: ${{ secrets.FIREBASE_DB_URL }}
-        run: |
-          node -e "
-          const https = require('https');
-          const dbUrl = new URL(process.env.FIREBASE_DB_URL + '/agendas.json');
-          
-          https.get(dbUrl, (res) => {
-            let data = '';
-            res.on('data', chunk => data += chunk);
-            res.on('end', () => {
-              const agendas = JSON.parse(data);
-              if (!agendas) { console.log('Tidak ada agenda.'); return; }
-
-              const tomorrow = new Date();
-              tomorrow.setDate(tomorrow.getDate() + 1);
-              const tomorrowStr = tomorrow.toISOString().split('T')[0];
-
-              const upcoming = Object.values(agendas).filter(a => {
-                const agDate = (a.date || '').split('T')[0];
-                return agDate === tomorrowStr;
-              });
-
-              console.log('Agenda besok:', upcoming.length);
-              if (upcoming.length === 0) { console.log('Skip notif.'); return; }
-
-              upcoming.forEach(agenda => {
-                const payload = JSON.stringify({
-                  app_id: process.env.ONESIGNAL_APP_ID,
-                  included_segments: ['All'],
-                  headings: { en: '📅 Reminder Agenda OSIS' },
-                  contents: { en: 'Besok: ' + agenda.title + ' — Jangan lupa hadir!' },
-                  url: 'https://smpnegeri48.github.io'
-                });
-
-                const options = {
-                  hostname: 'onesignal.com',
-                  path: '/api/v1/notifications',
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Basic ' + process.env.ONESIGNAL_API_KEY
-                  }
-                };
-
-                const req = https.request(options, (res) => {
-                  let body = '';
-                  res.on('data', d => body += d);
-                  res.on('end', () => console.log('Notif terkirim:', body));
-                });
-
-                req.on('error', e => console.error('Error:', e));
-                req.write(payload);
-                req.end();
-              });
-            });
-          }).on('error', e => console.error('Firebase error:', e));
+        run: node scripts/agenda-notif.js
